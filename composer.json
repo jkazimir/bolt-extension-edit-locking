@@ -1,0 +1,35 @@
+{
+    "name": "jkazimir/edit-locking",
+    "description": "Edit locking extension for Bolt CMS",
+    "type": "bolt-extension",
+    "keywords": [
+        "locking",
+        "editing",
+        "lock",
+        "edit"
+    ],
+    "require": {
+        "bolt/bolt": "^3.3",
+        "cboden/ratchet": "^0.4.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jared Kazimir",
+            "email": "jaredkazimir@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bolt\\Extension\\JKazimir\\EditLocking\\": "src"
+        }
+    },
+    "extra": {
+        "bolt-assets": "web",
+        "bolt-class": "Bolt\\Extension\\JKazimir\\EditLocking\\EditLockingExtension",
+        "bolt-icon": "icon-edit-locking.png",
+        "bolt-screenshots": [
+            "screenshot-locked.png"
+        ]
+    }
+}

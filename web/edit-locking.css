@@ -1,0 +1,5 @@
+.editing-disabled form[name="content_edit"],
+.editing-disabled aside > .panel:first-child > .panel-body {
+    opacity: 0.5;
+    pointer-events: none;
+}
