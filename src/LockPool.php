@@ -2,8 +2,7 @@
 
 namespace Bolt\Extension\JKazimir\EditLocking;
 
-use Hoa\Event\Source;
-use Hoa\Websocket\Connection;
+use Hoa\Websocket\Node;
 
 class LockPool
 {
@@ -58,9 +57,9 @@ class LockPool
     }
 
     /**
-     * @param Source|Connection $conn
+     * @param Node $conn
      */
-    public function removeAllByConnection(Source $conn)
+    public function removeAllByConnection(Node $conn)
     {
         foreach ($this->pool as $key => $lock) {
             if ($lock->getConnection() === $conn) {

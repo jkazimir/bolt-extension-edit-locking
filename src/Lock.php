@@ -2,13 +2,12 @@
 
 namespace Bolt\Extension\JKazimir\EditLocking;
 
-use Hoa\Event\Source;
-use Hoa\Websocket\Connection;
+use Hoa\Websocket\Node;
 
 class Lock
 {
     /**
-     * @var Source
+     * @var Node
      */
     private $conn;
 
@@ -18,9 +17,9 @@ class Lock
     private $time;
 
     /**
-     * @param Source|Connection $conn
+     * @param Node $conn
      */
-    public function __construct(Source $conn)
+    public function __construct(Node $conn)
     {
         $this->conn = $conn;
         $this->time = new \DateTime();
@@ -29,9 +28,9 @@ class Lock
     /**
      * Get the web socket connection
      *
-     * @return Source
+     * @return Node
      */
-    public function getConnection(): Source
+    public function getConnection(): Node
     {
         return $this->conn;
     }

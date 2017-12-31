@@ -5,6 +5,7 @@ namespace Bolt\Extension\JKazimir\EditLocking;
 use Hoa\Event\Bucket;
 use Hoa\Event\Source;
 use Hoa\Websocket\Connection;
+use Hoa\Websocket\Node;
 use Hoa\Websocket\Server;
 
 class LockingServerApp
@@ -45,7 +46,11 @@ class LockingServerApp
      */
     public function onOpen(Bucket $bucket)
     {
-        $this->clients->attach($bucket->getSource());
+        /** @var Node $node */
+        $node = $bucket->getSource()->getConnection()->getCurrentNode();
+
+        $this->clients->attach($node);
+
     }
 
     /**
@@ -55,10 +60,11 @@ class LockingServerApp
      */
     public function onClose(Bucket $bucket)
     {
-        $connection = $bucket->getSource();
+        /** @var Node $node */
+        $node = $bucket->getSource()->getConnection()->getCurrentNode();
 
-        $this->locks->removeAllByConnection($connection);
-        $this->clients->detach($connection);
+        $this->locks->removeAllByConnection($node);
+        $this->clients->detach($node);
     }
 
     /**
@@ -70,7 +76,7 @@ class LockingServerApp
     {
         $data = $bucket->getData();
 
-        print_r($data['exception']);
+        echo $data['exception']->getMessage();
     }
 
     /**
@@ -80,7 +86,7 @@ class LockingServerApp
      */
     public function onMessage(Bucket $bucket)
     {
-        $data = json_decode($bucket->getData(), true);
+        $data = json_decode($bucket->getData()['message'], true);
 
         if (!$data) {
             return;
@@ -116,7 +122,7 @@ class LockingServerApp
             return;
         }
 
-        $this->locks->set($key, new Lock($conn));
+        $this->locks->set($key, new Lock($conn->getConnection()->getCurrentNode()));
 
         $conn->send(json_encode([
             'type' => 'editLockGranted',
