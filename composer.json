@@ -10,7 +10,7 @@
     ],
     "require": {
         "bolt/bolt": "^3.3",
-        "cboden/ratchet": "^0.4.1"
+        "hoa/websocket": "^3.17"
     },
     "license": "MIT",
     "authors": [
@@ -19,6 +19,8 @@
             "email": "jaredkazimir@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Bolt\\Extension\\JKazimir\\EditLocking\\": "src"

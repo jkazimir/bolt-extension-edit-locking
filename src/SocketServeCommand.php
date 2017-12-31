@@ -3,9 +3,8 @@
 namespace Bolt\Extension\JKazimir\EditLocking;
 
 use Bolt\Nut\BaseCommand;
-use Ratchet\Http\HttpServer;
-use Ratchet\Server\IoServer;
-use Ratchet\WebSocket\WsServer;
+use Hoa\Socket\Server as SocketServer;
+use Hoa\Websocket\Server as WSServer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,6 +22,7 @@ class SocketServeCommand extends BaseCommand
             ->setDescription('Run the socket server for edit locking')
             ->addArgument('address', InputArgument::OPTIONAL, 'Address:port', '0.0.0.0')
             ->addOption('port', 'p', InputOption::VALUE_REQUIRED, 'Address port number', '8080')
+            ->addOption('secure', 's', InputOption::VALUE_REQUIRED, 'Use TLS', false)
         ;
     }
 
@@ -31,6 +31,7 @@ class SocketServeCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $protocol = $input->getOption('secure') ? 'wss:' : 'ws:';
         $address = $input->getArgument('address');
         if (strpos($address, ':') === false) {
             $address .= ':' . $input->getOption('port');
@@ -42,17 +43,12 @@ class SocketServeCommand extends BaseCommand
             return 1;
         }
 
-        list($hostname, $port) = explode(':', $address);
+        $server = new WSServer(new SocketServer("$protocol//$address"));
 
-        $server = IoServer::factory(
-            new HttpServer(
-                new WsServer(new LockingServer())
-            ),
-            $port,
-            $hostname
-        );
+        $app = new LockingServerApp();
+        $app->registerToServer($server);
 
-        $this->io->success(sprintf('Server running on ws://%s', $address));
+        $this->io->success(sprintf('Server running on %s//%s', $protocol, $address));
         $this->io->comment('Quit the server with CONTROL-C.');
 
         $server->run();

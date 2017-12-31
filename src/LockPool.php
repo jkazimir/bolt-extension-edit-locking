@@ -2,7 +2,8 @@
 
 namespace Bolt\Extension\JKazimir\EditLocking;
 
-use Ratchet\ConnectionInterface;
+use Hoa\Event\Source;
+use Hoa\Websocket\Connection;
 
 class LockPool
 {
@@ -57,9 +58,9 @@ class LockPool
     }
 
     /**
-     * @param ConnectionInterface $conn
+     * @param Source|Connection $conn
      */
-    public function removeAllByConnection(ConnectionInterface $conn)
+    public function removeAllByConnection(Source $conn)
     {
         foreach ($this->pool as $key => $lock) {
             if ($lock->getConnection() === $conn) {
